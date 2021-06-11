@@ -1,16 +1,14 @@
 package virusgame;
 
-import virusgame.Country;
-import virusgame.Disease;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Game {
 
     double myPeopleKilled;
-    double myWorldPopulation;
-    int myInfectedPopulation;
+    long myWorldPopulation;
+    long myInfectedPopulation;
+    long myDeadPopulation;
     int myGameLength = 300;
     int myCurrentGameLength = 0;
     int myPoints = 0;
@@ -34,7 +32,7 @@ public class Game {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                myCurrentGameLength += 10;
+                myCurrentGameLength += 5;
 
                 diseaseSpread(disease);
                 worldDeath(disease);
@@ -42,12 +40,11 @@ public class Game {
 
                 int points = getPoints(findInfectedPopulation());
 
-
                 if (myCurrentGameLength == myGameLength) {
                     loseCondition = true;
                 }
 
-                if (myWorldPopulation <= 0) {
+                if (findCurrentAlive() <= 0) {
                     winCondition = true;
                 }
 
@@ -59,9 +56,9 @@ public class Game {
                 getPoints(findInfectedPopulation());
                 setMyPoints(myPoints);
                 System.out.println(myPoints);
+                System.out.println(findWorldPopulation());
                 tick++;
 
-                //Decreased for testing
             }
         }, 5000, 5000);
     }
@@ -81,6 +78,10 @@ public class Game {
         return countries;
     }
 
+    public boolean getWinCondition() {return winCondition;}
+
+    public boolean getLoseCondition() {return loseCondition;}
+
     public int getMyCurrentGameLength() {
         return myCurrentGameLength;
     }
@@ -97,13 +98,16 @@ public class Game {
                 }
             }
         }
+        if (countries[6].getMyInfected() > 0 && countries[6].getMyInfected() < countries[6].getMyPopulation()){
+            countries[6].spread(disease);
+        }
     }
 
 
     private void worldDeath(Disease disease) {
         disease.setDeathRate();
         for (Country c : countries) {
-            if (c.getMyInfected() > 0) {
+            if (c.getMyInfected() > 0 && c.getMyDead()<c.getMyPopulation()) {
                 c.death(disease);
             }
         }
@@ -116,15 +120,15 @@ public class Game {
         System.out.println();
     }
 
-    public int findWorldPopulation() {
+    public long findWorldPopulation() {
         myWorldPopulation = 0;
         for (Country c : countries) {
             myWorldPopulation += c.getMyPopulation();
         }
-        return (int) myWorldPopulation;
+        return myWorldPopulation;
     }
 
-    public int findInfectedPopulation() {
+    public long findInfectedPopulation() {
         myInfectedPopulation = 0;
         for (Country c : countries) {
             myInfectedPopulation += c.getMyInfected();
@@ -132,7 +136,19 @@ public class Game {
         return myInfectedPopulation;
     }
 
-    public int getPoints(int infected) {
+    public long findTotalDeath() {
+        myDeadPopulation = 0;
+        for(Country c : countries) {
+            myDeadPopulation += c.getMyDead();
+        }
+        return myDeadPopulation;
+    }
+
+    public long findCurrentAlive() {
+        return (findWorldPopulation() - findTotalDeath());
+    }
+
+    public int getPoints(long infected) {
         if (infected > 100 && pointsCounter == 0) {
             myPoints++;
             pointsCounter++;
@@ -149,6 +165,33 @@ public class Game {
             myPoints++;
             pointsCounter++;
         }
+        else if (infected > 500000 && pointsCounter == 5) {
+            myPoints++;
+            pointsCounter++;
+        }
+        else if (infected > 500000 && pointsCounter == 6) {
+            myPoints++;
+            pointsCounter++;
+        }
+        else if (infected > 1000000 && pointsCounter == 7) {
+            myPoints++;
+            myPoints++;
+            pointsCounter++;
+        }
+        else if (infected > 100000000 && pointsCounter == 8) {
+            myPoints++;
+            myPoints++;
+            myPoints++;
+            pointsCounter++;
+        }
+        else if (infected > 1000000000 && pointsCounter == 9) {
+            myPoints++;
+            myPoints++;
+            myPoints++;
+            myPoints++;
+            pointsCounter++;
+        }
+
         return myPoints;
     }
 

@@ -5,9 +5,10 @@ public class Country {
 
     private boolean myHotRes;
     private boolean myColdRes;
-    private int myPopulation;
-    private int myInfected;
-    private int myDead;
+    private long myPopulation;
+    private int initialPop;
+    private long myInfected;
+    private long myDead;
     private double myPercentInf;
 
     public Country() {
@@ -20,11 +21,12 @@ public class Country {
         myPercentInf = myInfected / myPopulation;
     }
 
-    public Country(String name, boolean hot, boolean cold, int population, int infected, int dead) {
+    public Country(String name, boolean hot, boolean cold, int population, long infected, long dead) {
         myName = name;
         myHotRes = hot;
         myColdRes = cold;
         myPopulation = population;
+        initialPop=population;
         myInfected = infected;
         myDead = dead;
         myPercentInf = myInfected / myPopulation;
@@ -34,7 +36,7 @@ public class Country {
         myInfected = i;
     }
 
-    public int getMyInfected() {
+    public long getMyInfected() {
         return myInfected;
     }
 
@@ -42,7 +44,7 @@ public class Country {
     public void spread(Disease disease) {
         if (compareResistance(disease)) {
             //Spread Rate 10, 20, 30, 40
-            int test = (int) ((Math.random() * 10) + (1 + (disease.getMySpreadRate() / 10)) * (getMyInfected()));
+            int test = (int) ((Math.random() * 10) + (1 + (disease.getMySpreadRate() / 12.5)) * (getMyInfected()));
             if (test >= myPopulation) {
                 setMyInfected(myPopulation);
             } else {
@@ -51,14 +53,14 @@ public class Country {
             }
         }
     }
-    int test = 0;
+
     //determines how many people die
+    int test = 0;
     public void death(Disease disease) {
         //My Death Rate: Starts at: 10-> goes down by 1 each upgrade
         test += myInfected / disease.getMyDeathRate();
-        test += 10;
-        if (test >= myPopulation) {
-            setMyDead(myPopulation);
+        if (test >= initialPop) {
+            setMyDead(initialPop);
         } else {
             setMyDead(test);
         }
@@ -85,11 +87,11 @@ public class Country {
             return true;
     }
 
-    public int getMyPopulation() {
+    public long getMyPopulation() {
         return myPopulation;
     }
 
-    public void setMyPopulation(int myPopulation) {
+    public void setMyPopulation(long myPopulation) {
         this.myPopulation = myPopulation;
     }
 
@@ -109,15 +111,15 @@ public class Country {
         this.myColdRes = myColdRes;
     }
 
-    public int getMyDead() {
+    public long getMyDead() {
         return myDead;
     }
 
-    public void setMyDead(int myDead) {
+    public void setMyDead(long myDead) {
         this.myDead = myDead;
     }
 
-    public void setMyInfected(int myInfected) {
+    public void setMyInfected(long myInfected) {
         this.myInfected = myInfected;
     }
 

@@ -6,12 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-
 public class virusGUI {
     private JPanel virusPanel;
     private JButton brazilButton;
-    private JProgressBar cureBar;
-    private JProgressBar infectedBar;
     private JLabel infectedLabel;
     private JLabel deadLabel;
     private JButton upgradesButton;
@@ -24,7 +21,6 @@ public class virusGUI {
     private JButton indiaButton;
     private JButton USAButton;
     private JLabel countryInfectedLabel;
-    private JProgressBar deadBar;
     private JLabel coldResLabel;
     private JLabel heatResLabel;
     private JLabel cureLabel;
@@ -41,9 +37,16 @@ public class virusGUI {
     private JLabel worldPopulation;
     private JButton updateButton;
     Disease disease;
+    Boolean hotClick = false;
+    Boolean coldClick = false;
+    Boolean maxTransmission = false;
+    Boolean maxSymptom = false;
+    int transmissionCnt = 0;
+    int symptomCnt = 0;
 
 
     public virusGUI(Country[] countries, Disease disease, Game game) {
+
         transmissionButton.setVisible(false);
         symptomButton.setVisible(false);
         coldUpgrade.setVisible(false);
@@ -52,10 +55,6 @@ public class virusGUI {
         symptomCostLabel.setVisible(false);
         coldCost.setVisible(false);
         heatCost.setVisible(false);
-        cureBar.setMinimum(0);
-        cureBar.setMaximum(600);
-
-
 
         brazilButton.addActionListener(new ActionListener() {
             @Override
@@ -133,49 +132,49 @@ public class virusGUI {
             public void actionPerformed(ActionEvent e) {
                 if (transmissionButton.isVisible()) {
                     transmissionButton.setVisible(false);
-                }else if (!transmissionButton.isVisible()) {
+                } else if (!transmissionButton.isVisible() && !maxTransmission) {
                     transmissionButton.setVisible(true);
                 }
 
                 if (symptomButton.isVisible()) {
                     symptomButton.setVisible(false);
-                }else if (!symptomButton.isVisible()) {
+                } else if (!symptomButton.isVisible() && !maxSymptom) {
                     symptomButton.setVisible(true);
                 }
 
                 if (coldUpgrade.isVisible()) {
                     coldUpgrade.setVisible(false);
-                }else if (!coldUpgrade.isVisible()) {
+                } else if (!coldUpgrade.isVisible() && !coldClick) {
                     coldUpgrade.setVisible(true);
                 }
 
                 if (heatButton.isVisible()) {
                     heatButton.setVisible(false);
-                }else if (!heatButton.isVisible()) {
+                } else if (!heatButton.isVisible() && !hotClick) {
                     heatButton.setVisible(true);
                 }
 
                 if (transmissionCostLabel.isVisible()) {
                     transmissionCostLabel.setVisible(false);
-                }else if (!transmissionCostLabel.isVisible()) {
+                } else if (!transmissionCostLabel.isVisible() && !maxTransmission) {
                     transmissionCostLabel.setVisible(true);
                 }
 
                 if (symptomCostLabel.isVisible()) {
                     symptomCostLabel.setVisible(false);
-                }else if (!symptomCostLabel.isVisible()) {
+                } else if (!symptomCostLabel.isVisible() && !maxSymptom) {
                     symptomCostLabel.setVisible(true);
                 }
 
                 if (coldCost.isVisible()) {
                     coldCost.setVisible(false);
-                }else if (!coldCost.isVisible()) {
+                } else if (!coldCost.isVisible() && !coldClick) {
                     coldCost.setVisible(true);
                 }
 
                 if (heatCost.isVisible()) {
                     heatCost.setVisible(false);
-                }else if (!heatCost.isVisible()) {
+                } else if (!heatCost.isVisible() && !hotClick) {
                     heatCost.setVisible(true);
                 }
 
@@ -186,25 +185,191 @@ public class virusGUI {
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                double minutes = game.getMyCurrentGameLength() / 60;
+                System.out.println(game.getMyCurrentGameLength());
+
                 pointsLabel.setText("Points: " + game.getMyPoints());
+                infectedLabel.setText("Infected: " + game.findInfectedPopulation());
+                extinctionLabel.setText("Dead: " + game.findTotalDeath());
+                cureLabel.setText("Cure: " + minutes + " / 5 minutes");
+                worldPopulation.setText("Population: "  + (game.findWorldPopulation() - game.findTotalDeath()));
             }
         });
 
         coldUpgrade.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (disease.isMyColdResistance() && game.getMyPoints() >=1){
+                if (game.getMyPoints() >= 2 && disease.isMyColdResistance() && !coldClick) {
                     disease.setMyColdResistance(true);
                     game.myPointsDecrease();
+                    game.myPointsDecrease();
+                    coldClick = true;
+                    coldUpgrade.setVisible(false);
+                    coldCost.setVisible(false);
+                }
+            }
+        });
+
+        heatButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (game.getMyPoints() >= 1 && !disease.isMyHeatResistance() && !hotClick) {
+                    disease.setMyHeatResistance(true);
+                    game.myPointsDecrease();
+                    hotClick = true;
+                    heatButton.setVisible(false);
+                    heatCost.setVisible(false);
+                }
+            }
+        });
+
+        transmissionButton.setText("Air");
+        transmissionCostLabel.setText("Cost: 1");
+
+        transmissionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (transmissionCnt < 5) {
+
+                    if(transmissionCnt == 0 && game.getMyPoints() >= 1) {
+                        game.myPointsDecrease();
+                        disease.setMyAir(true);
+                        transmissionCnt++;
+
+                    }
+                    if (transmissionCnt == 1 && game.getMyPoints() >= 2) {
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        disease.setMyBlood(true);
+                        transmissionCnt++;
+
+                    }
+                    if(transmissionCnt == 2 && game.getMyPoints() >= 3) {
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        disease.setMyDroplet(true);
+                        transmissionCnt++;
+
+                    }
+                    if(transmissionCnt == 3 && game.getMyPoints() >= 4) {
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        disease.setMyAnimal(true);
+                        transmissionCnt++;
+
+                    }
+                    if(transmissionCnt == 4 && game.getMyPoints() >= 5) {
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        disease.setMyIngestion(true);
+                        transmissionCnt++;
+                    }
+
+                    if (transmissionCnt == 1) {
+                        transmissionButton.setText("Blood");
+                        transmissionCostLabel.setText("Cost: 2");
+                    }
+                    if (transmissionCnt == 2) {
+                        transmissionButton.setText("Droplet");
+                        transmissionCostLabel.setText("Cost: 3");
+                    }
+                    if (transmissionCnt == 3) {
+                        transmissionButton.setText("Animal");
+                        transmissionCostLabel.setText("Cost: 4");
+                    }
+                    if (transmissionCnt == 4) {
+                        transmissionButton.setText("Ingestion");
+                        transmissionCostLabel.setText("Cost: 5");
+                    }
+                }else {
+                    transmissionButton.setVisible(false);
+                    transmissionCostLabel.setVisible(false);
+                    maxTransmission = true;
+                }
+            }
+        });
+
+        symptomButton.setText("Runny Nose");
+        symptomCostLabel.setText("Cost: 1");
+
+        symptomButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (symptomCnt < 5) {
+
+                    if(symptomCnt == 0 && game.getMyPoints() >= 1) {
+                        game.myPointsDecrease();
+                        disease.setMyRunnyNose(true);
+                        symptomCnt++;
+                    }
+                    if (symptomCnt == 1 && game.getMyPoints() >= 2) {
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        disease.setMyCough(true);
+                        symptomCnt++;
+
+                    }
+                    if(symptomCnt == 2 && game.getMyPoints() >= 3) {
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        disease.setMyFever(true);
+                        symptomCnt++;
+
+                    }
+                    if(symptomCnt == 3 && game.getMyPoints() >= 4) {
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        disease.setMyHeadache(true);
+                        symptomCnt++;
+
+                    }
+                    if(symptomCnt == 4 && game.getMyPoints() >= 5) {
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        game.myPointsDecrease();
+                        disease.setMyVomiting(true);
+                        disease.setMyIngestion(true);
+                        symptomCnt++;
+                    }
+
+                    if (symptomCnt == 1) {
+                        symptomButton.setText("Cough");
+                        symptomCostLabel.setText("Cost: 2");
+                    }
+                    if (symptomCnt == 2) {
+                        symptomButton.setText("Fever");
+                        symptomCostLabel.setText("Cost: 3");
+                    }
+                    if (symptomCnt == 3) {
+                        symptomButton.setText("Headache");
+                        symptomCostLabel.setText("Cost: 4");
+                    }
+                    if (symptomCnt == 4) {
+                        symptomButton.setText("Vomiting");
+                        symptomCostLabel.setText("Cost: 5");
+                    }
+                }else {
+                    symptomButton.setVisible(false);
+                    symptomCostLabel.setVisible(false);
+                    maxSymptom = true;
                 }
             }
         });
     }
 
 
-
-
-    public void runGUI(Country[] countries, Game game) {
+    public void runGUI(Country[] countries, Disease disease, Game game) {
         JFrame frame = new JFrame("It's Going to Schmitz");
         frame.setContentPane(new virusGUI(countries, disease, game).virusPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

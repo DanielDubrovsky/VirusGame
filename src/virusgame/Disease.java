@@ -2,11 +2,8 @@ package virusgame;
 
 public class Disease {
 
-
-
     //virusgame.Disease Name Determined by User
     String myName;
-
 
     //Spread and Death Rate
     int mySpreadRate;
@@ -32,8 +29,8 @@ public class Disease {
     boolean myAnimal;
     boolean myIngestion;
 
-    public Disease ()
-    {
+
+    public Disease () {
 
     }
 
@@ -60,6 +57,8 @@ public class Disease {
     //This is good non-repetitive code
     //Thank you to IntelliJ's generate feature
 
+
+
     public int getMySpreadRate() {
         return mySpreadRate;
     }
@@ -84,13 +83,6 @@ public class Disease {
         this.myHeatResistance = myHeatResistance;
     }
 
-    public boolean isMyCureResistance() {
-        return myCureResistance;
-    }
-
-    public void setMyCureResistance(boolean myCureResistance) {
-        this.myCureResistance = myCureResistance;
-    }
 
     public boolean isMyRunnyNose() {
         return myRunnyNose;
@@ -195,25 +187,20 @@ public class Disease {
     public void setSpreadRate() {
         this.mySpreadRate = 10;
         if (myAnimal) {
-            mySpreadRate += 10;
+            mySpreadRate += 1;
         }
         if (myAir) {
-            mySpreadRate += 10;
+            mySpreadRate += 1;
         }
-
         if (myBlood) {
-            mySpreadRate += 10;
+            mySpreadRate += 1;
         }
-
         if (myIngestion) {
-            mySpreadRate += 10;
+            mySpreadRate += 1;
         }
-
         if (myDroplet) {
-            mySpreadRate += 10;
+            mySpreadRate += 1;
         }
-
     }
-
 }
 
