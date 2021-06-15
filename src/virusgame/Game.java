@@ -5,7 +5,7 @@ import java.util.TimerTask;
 
 public class Game {
 
-    double myPeopleKilled;
+    // Collection of variables to be used in the methods in Game class
     long myWorldPopulation;
     long myInfectedPopulation;
     long myDeadPopulation;
@@ -17,9 +17,10 @@ public class Game {
     boolean loseCondition = false;
     boolean winCondition = false;
 
-
+    // Creates new array for countries
     Country[] countries;
 
+    // Creates new timer object
     Timer timer = new Timer();
 
 
@@ -27,12 +28,13 @@ public class Game {
 
     }
 
-
+    // Game timer class, handles time of current game, disease spread, disease death, and game points at current time
     public void gameTimer(Disease disease) {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 myCurrentGameLength += 5;
+
 
                 diseaseSpread(disease);
                 worldDeath(disease);
@@ -55,15 +57,16 @@ public class Game {
 
                 getPoints(findInfectedPopulation());
                 setMyPoints(myPoints);
-                System.out.println(myPoints);
-                System.out.println(findWorldPopulation());
+                System.out.println("points="+myPoints);
+                System.out.println("World population="+findWorldPopulation());
+
                 tick++;
 
             }
         }, 5000, 5000);
     }
 
-
+    // Constructs 7 countries into the array
     public Country[] createCountries() {
         countries = new Country[7];
         //Do not change population
@@ -78,21 +81,18 @@ public class Game {
         return countries;
     }
 
-    public boolean getWinCondition() {return winCondition;}
-
-    public boolean getLoseCondition() {return loseCondition;}
-
     public int getMyCurrentGameLength() {
         return myCurrentGameLength;
-    }
+    } // Returns current game length, in seconds, goes up by increments of 5 because the game ticks every 5 seconds
 
+    // Method for determining if the country next in the array should be infected, or spread to
     private void diseaseSpread(Disease disease) {
         disease.setSpreadRate();
         for (int index = 0; index <= 5; index++) {
             if (countries[index].getMyInfected() > 0 && countries[index].getMyInfected() < countries[index].getMyPopulation()) {
 
                 countries[index].spread(disease);
-                if (countries[index + 1].getMyInfected() == 0.0 && countries[index + 1].getMyInfected() < countries[index + 1].getMyPopulation()) {
+                if ( countries[index + 1].getMyInfected() == 0.0 && countries[index + 1].getMyInfected() < countries[index + 1].getMyPopulation()) {
 
                     countries[index + 1].spread(disease);
                 }
@@ -103,7 +103,7 @@ public class Game {
         }
     }
 
-
+    // Method for counting current amount of people dead in the world
     private void worldDeath(Disease disease) {
         disease.setDeathRate();
         for (Country c : countries) {
@@ -113,6 +113,7 @@ public class Game {
         }
     }
 
+    // Method for displaying data on countries in "countries" array
     public void displayCountries(Country[] countries) {
         for (Country c : countries) {
             System.out.println(c.toString());
@@ -120,6 +121,7 @@ public class Game {
         System.out.println();
     }
 
+    // Method to find the total world population
     public long findWorldPopulation() {
         myWorldPopulation = 0;
         for (Country c : countries) {
@@ -128,6 +130,7 @@ public class Game {
         return myWorldPopulation;
     }
 
+    // Method to find the total of world population infected with disease
     public long findInfectedPopulation() {
         myInfectedPopulation = 0;
         for (Country c : countries) {
@@ -136,6 +139,7 @@ public class Game {
         return myInfectedPopulation;
     }
 
+    // Method to find the total people dead in the world from the disease
     public long findTotalDeath() {
         myDeadPopulation = 0;
         for(Country c : countries) {
@@ -144,10 +148,12 @@ public class Game {
         return myDeadPopulation;
     }
 
+    // Method to find the remaining people alive
     public long findCurrentAlive() {
         return (findWorldPopulation() - findTotalDeath());
     }
 
+    // Method to determine when to give out points to the player based on the amount of people infected or killed
     public int getPoints(long infected) {
         if (infected > 100 && pointsCounter == 0) {
             myPoints++;
@@ -191,19 +197,30 @@ public class Game {
             myPoints++;
             pointsCounter++;
         }
+        else if (findTotalDeath() > (findWorldPopulation() / 2) && pointsCounter == 10) {
+            myPoints++;
+            myPoints++;
+            myPoints++;
+            myPoints++;
+            myPoints++;
+            pointsCounter++;
+        }
 
         return myPoints;
     }
 
 
+    // Decrements points by 1
     public void myPointsDecrease() {
         this.myPoints--;
     }
 
+    // Setter method for points
     public void setMyPoints(int myPoints) {
         this.myPoints = myPoints;
     }
 
+    // Getter method for points
     public int getMyPoints() {
         return myPoints;
     }

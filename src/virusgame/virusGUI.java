@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 
 
 public class virusGUI {
+
+    // Intiates GUI elements, and variables needed for GUI manipulation
     private JPanel virusPanel;
     private JButton brazilButton;
     private JLabel infectedLabel;
@@ -36,6 +38,8 @@ public class virusGUI {
     private JLabel extinctionLabel;
     private JLabel worldPopulation;
     private JButton updateButton;
+    private JLabel winLabel;
+    private JLabel loseLabel;
     Disease disease;
     Boolean hotClick = false;
     Boolean coldClick = false;
@@ -44,9 +48,10 @@ public class virusGUI {
     int transmissionCnt = 0;
     int symptomCnt = 0;
 
-
+    // Default GUI method, uses objects from all classes
     public virusGUI(Country[] countries, Disease disease, Game game) {
 
+        // Sets GUI elements not wanted to be seen in intial state visibility to false
         transmissionButton.setVisible(false);
         symptomButton.setVisible(false);
         coldUpgrade.setVisible(false);
@@ -55,7 +60,10 @@ public class virusGUI {
         symptomCostLabel.setVisible(false);
         coldCost.setVisible(false);
         heatCost.setVisible(false);
+        winLabel.setVisible(false);
+        loseLabel.setVisible(false);
 
+        // Method that runs when you click on brazil country, displays data for the country
         brazilButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -66,6 +74,8 @@ public class virusGUI {
                 popLabel.setText("Population: " + countries[0].getMyPopulation());
             }
         });
+
+        // Method that runs when you click on USA country, displays data for the country
         USAButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -76,6 +86,8 @@ public class virusGUI {
                 popLabel.setText("Population: " + countries[1].getMyPopulation());
             }
         });
+
+        // Method that runs when you click on Canada country, displays data for the country
         canadaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -86,6 +98,8 @@ public class virusGUI {
                 popLabel.setText("Population: " + countries[2].getMyPopulation());
             }
         });
+
+        // Method that runs when you click on Greenland country, displays data for the country
         greenlandButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -96,6 +110,8 @@ public class virusGUI {
                 popLabel.setText("Population: " + countries[3].getMyPopulation());
             }
         });
+
+        // Method that runs when you click on England country, displays data for the country
         englandButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,6 +122,8 @@ public class virusGUI {
                 popLabel.setText("Population: " + countries[4].getMyPopulation());
             }
         });
+
+        // Method that runs when you click on China country, displays data for the country
         chinaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -116,6 +134,8 @@ public class virusGUI {
                 popLabel.setText("Population: " + countries[5].getMyPopulation());
             }
         });
+
+        // Method that runs when you click on India country, displays data for the country
         indiaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -127,6 +147,7 @@ public class virusGUI {
             }
         });
 
+        // Upgrades button displays all the upgrade buttons and their cost labels, also when you click it again hides them
         upgradesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -182,6 +203,7 @@ public class virusGUI {
             }
         });
 
+        // Update button displays all the current data globally in the game in their correct labels, as well as updates the GUI to show "You Win!" or "You Lost!" if you win or lose
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -192,14 +214,79 @@ public class virusGUI {
                 infectedLabel.setText("Infected: " + game.findInfectedPopulation());
                 extinctionLabel.setText("Dead: " + game.findTotalDeath());
                 cureLabel.setText("Cure: " + minutes + " / 5 minutes");
-                worldPopulation.setText("Population: "  + (game.findWorldPopulation() - game.findTotalDeath()));
+                worldPopulation.setText("Population: "  + (game.findCurrentAlive()));
+
+
+
+                if(game.findCurrentAlive() == 0) {
+                    winLabel.setVisible(true);
+                    brazilButton.setVisible(false);
+                    canadaButton.setVisible(false);
+                    greenlandButton.setVisible(false);
+                    englandButton.setVisible(false);
+                    USAButton.setVisible(false);
+                    indiaButton.setVisible(false);
+                    chinaButton.setVisible(false);
+                    pointsLabel.setVisible(false);
+                    worldPopulation.setVisible(false);
+                    heatResLabel.setVisible(false);
+                    coldResLabel.setVisible(false);
+                    popLabel.setVisible(false);
+                    countryInfectedLabel.setVisible(false);
+                    infectedLabel.setVisible(false);
+                    deadLabel.setVisible(false);
+                    extinctionLabel.setVisible(false);
+                    updateButton.setVisible(false);
+                    cureLabel.setVisible(false);
+                    upgradesButton.setVisible(false);
+                    transmissionButton.setVisible(false);
+                    symptomButton.setVisible(false);
+                    coldUpgrade.setVisible(false);
+                    heatButton.setVisible(false);
+                    transmissionCostLabel.setVisible(false);
+                    symptomCostLabel.setVisible(false);
+                    coldCost.setVisible(false);
+                    heatCost.setVisible(false);
+                }
+
+                if (game.getMyCurrentGameLength() == 300) {
+                    loseLabel.setVisible(true);
+                    brazilButton.setVisible(false);
+                    canadaButton.setVisible(false);
+                    greenlandButton.setVisible(false);
+                    englandButton.setVisible(false);
+                    USAButton.setVisible(false);
+                    indiaButton.setVisible(false);
+                    chinaButton.setVisible(false);
+                    pointsLabel.setVisible(false);
+                    worldPopulation.setVisible(false);
+                    heatResLabel.setVisible(false);
+                    coldResLabel.setVisible(false);
+                    popLabel.setVisible(false);
+                    countryInfectedLabel.setVisible(false);
+                    infectedLabel.setVisible(false);
+                    deadLabel.setVisible(false);
+                    extinctionLabel.setVisible(false);
+                    updateButton.setVisible(false);
+                    cureLabel.setVisible(false);
+                    upgradesButton.setVisible(false);
+                    transmissionButton.setVisible(false);
+                    symptomButton.setVisible(false);
+                    coldUpgrade.setVisible(false);
+                    heatButton.setVisible(false);
+                    transmissionCostLabel.setVisible(false);
+                    symptomCostLabel.setVisible(false);
+                    coldCost.setVisible(false);
+                    heatCost.setVisible(false);
+                }
             }
         });
 
+        // Button for buying the Cold Resistance upgrade with points
         coldUpgrade.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (game.getMyPoints() >= 2 && disease.isMyColdResistance() && !coldClick) {
+                if (game.getMyPoints() >= 2 && !disease.isMyColdResistance() && !coldClick) {
                     disease.setMyColdResistance(true);
                     game.myPointsDecrease();
                     game.myPointsDecrease();
@@ -210,6 +297,7 @@ public class virusGUI {
             }
         });
 
+        // Button for buying the Heat Resistance upgrade with points
         heatButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -226,6 +314,8 @@ public class virusGUI {
         transmissionButton.setText("Air");
         transmissionCostLabel.setText("Cost: 1");
 
+
+        // Button for buying transmission upgrades, scales throught the game with higher and higher points
         transmissionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -298,6 +388,7 @@ public class virusGUI {
         symptomButton.setText("Runny Nose");
         symptomCostLabel.setText("Cost: 1");
 
+        // Button for buying symptom upgrades, scales throught the game with higher and higher points
         symptomButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -368,7 +459,7 @@ public class virusGUI {
         });
     }
 
-
+    // Method to run the GUI, giving the game the proper title as well as initializing the JFrame for the GUI
     public void runGUI(Country[] countries, Disease disease, Game game) {
         JFrame frame = new JFrame("It's Going to Schmitz");
         frame.setContentPane(new virusGUI(countries, disease, game).virusPanel);
@@ -377,4 +468,5 @@ public class virusGUI {
         frame.setVisible(true);
 
     }
+
 }
